@@ -1,7 +1,7 @@
 #!/bin/sh
 set -eu
 
-API_BASE_URL="${FRONTEND_API_BASE_URL:-http://localhost:4408}"
+API_BASE_URL="${FRONTEND_API_BASE_URL:-/api}"
 
 cat > /usr/share/nginx/html/env.js <<EOF
 window.__APP_CONFIG__ = {

@@ -22,6 +22,8 @@ docker compose up --build
 
 Then open `http://localhost:4409`.
 
+In Docker mode, the frontend serves API calls through same-origin `/api` proxying to the backend container. This avoids browser CORS/network-origin issues on server deployments.
+
 ## Current flow
 
 1. Auth screen supports register via `POST /auth/register` (username + password + password confirmation) and login via `POST /auth/login` (username + password).

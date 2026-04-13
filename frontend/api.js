@@ -9,13 +9,28 @@ export function getDefaultApiBase() {
 }
 
 function buildUrl(baseUrl, path, params = {}) {
-  const url = new URL(path, baseUrl || getDefaultApiBase());
+  const resolvedBase = resolveBaseUrl(baseUrl || getDefaultApiBase());
+  const normalizedBase = resolvedBase.endsWith("/") ? resolvedBase : `${resolvedBase}/`;
+  const normalizedPath = path.startsWith("/") ? path.slice(1) : path;
+  const url = new URL(normalizedPath, normalizedBase);
   Object.entries(params).forEach(([key, value]) => {
     if (value !== undefined && value !== null && value !== "") {
       url.searchParams.set(key, String(value));
     }
   });
   return url;
+}
+
+function resolveBaseUrl(rawBase) {
+  if (/^https?:\/\//i.test(rawBase)) {
+    return rawBase;
+  }
+
+  if (rawBase.startsWith("/") && typeof window !== "undefined") {
+    return `${window.location.origin}${rawBase}`;
+  }
+
+  return rawBase;
 }
 
 function buildAuthHeaders(authToken, includeJson = false) {

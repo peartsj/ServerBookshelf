@@ -33,6 +33,11 @@ This file is the source of truth for frontend/backend consistency.
 - Header/query username fallbacks are disabled for protected routes.
 - Libraries are isolated by user and cannot read each other's books.
 
+## Deployment note (Docker Compose)
+
+- Frontend container can proxy requests from `/api/*` to backend service endpoints, so browser traffic remains same-origin (`http://<host>:4409`).
+- Example: frontend `POST /api/auth/login` proxies to backend `POST /auth/login`.
+
 ## Ebook list filters
 
 - `GET /ebooks` supports optional query parameters:

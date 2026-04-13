@@ -120,12 +120,14 @@ On the server, create `/opt/bookshelf/.env`:
 
 ```bash
 cat >/opt/bookshelf/.env <<'EOF'
-FRONTEND_API_BASE_URL=http://YOUR_SERVER_IP:4408
+FRONTEND_API_BASE_URL=/api
 CORS_ALLOW_ORIGINS=http://YOUR_SERVER_IP:4409,http://localhost:4409,http://127.0.0.1:4409
 EOF
 ```
 
 Use a LAN IP or DNS name that browsers on your network can reach.
+
+`FRONTEND_API_BASE_URL=/api` enables same-origin API proxying through the frontend container, which avoids browser cross-origin failures after clean redeploys.
 
 4) Start the stack on the server
 
@@ -174,6 +176,7 @@ To restore, untar back into the same mounted volumes.
 - Frontend opens but API calls fail:
 	- Verify backend container is healthy in `docker compose ps`.
 	- Check backend logs with `docker compose logs -f backend`.
+	- Verify frontend runtime config with `curl http://localhost:4409/env.js` (it should show `API_BASE_URL: "/api"`).
 - Upload rejected:
 	- Current project scope is EPUB-only; upload `.epub` files.
 
