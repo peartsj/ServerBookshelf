@@ -121,6 +121,7 @@ On the server, create `/opt/bookshelf/.env`:
 ```bash
 cat >/opt/bookshelf/.env <<'EOF'
 FRONTEND_API_BASE_URL=http://YOUR_SERVER_IP:4408
+CORS_ALLOW_ORIGINS=http://YOUR_SERVER_IP:4409,http://localhost:4409,http://127.0.0.1:4409
 EOF
 ```
 
