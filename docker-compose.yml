@@ -9,6 +9,7 @@ services:
       - APP_NAME=Bookshelf Service
       - APP_ENV=development
       - DATABASE_URL=sqlite:///./data/library.db
+      - MAX_UPLOAD_SIZE_MB=${MAX_UPLOAD_SIZE_MB:-25}
       - CORS_ALLOW_ORIGINS=${CORS_ALLOW_ORIGINS:-http://localhost:4409,http://127.0.0.1:4409}
     volumes:
       - bookshelf_data:/app/data

@@ -75,6 +75,7 @@ Upload validation:
 - EPUB signature validation (`PK`)
 - Empty uploads are rejected
 - Default max upload size: `25 MB` (configurable via `max_upload_size_mb`)
+- In Docker Compose deployments, set `MAX_UPLOAD_SIZE_MB` in project `.env` (default `25`).
 - Upload responses include `checksum_sha256` for file integrity tracking
 - `POST /ebooks` attempts to auto-extract EPUB cover art when possible (if `cover_art_path` is omitted)
 - `GET /ebooks/{id}/cover` returns the user-scoped cover image bytes for frontend thumbnail rendering

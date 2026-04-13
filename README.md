@@ -122,6 +122,7 @@ On the server, create `/opt/bookshelf/.env`:
 cat >/opt/bookshelf/.env <<'EOF'
 FRONTEND_API_BASE_URL=/api
 CORS_ALLOW_ORIGINS=http://YOUR_SERVER_IP:4409,http://localhost:4409,http://127.0.0.1:4409
+MAX_UPLOAD_SIZE_MB=25
 EOF
 ```
 
@@ -179,6 +180,7 @@ To restore, untar back into the same mounted volumes.
 	- Verify frontend runtime config with `curl http://localhost:4409/env.js` (it should show `API_BASE_URL: "/api"`).
 - Upload rejected:
 	- Current project scope is EPUB-only; upload `.epub` files.
+	- If you see `413`, rebuild frontend/backend with latest config and verify `MAX_UPLOAD_SIZE_MB` in `.env`.
 
 Backend checks:
 

@@ -46,6 +46,9 @@ function buildAuthHeaders(authToken, includeJson = false) {
 
 async function parseApiError(response) {
   let message = `Request failed (${response.status})`;
+  if (response.status === 413) {
+    message = "Upload too large. Maximum supported file size is 25 MB.";
+  }
   try {
     const payload = await response.json();
     if (payload && payload.detail) {
