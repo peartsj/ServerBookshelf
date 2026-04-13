@@ -1,0 +1,31 @@
+services:
+  backend:
+    build:
+      context: ./backend
+    container_name: bookshelf_backend
+    ports:
+      - "4408:4408"
+    environment:
+      - APP_NAME=Bookshelf Service
+      - APP_ENV=development
+      - DATABASE_URL=sqlite:///./data/library.db
+      - CORS_ALLOW_ORIGINS=http://localhost:4409,http://127.0.0.1:4409
+    volumes:
+      - bookshelf_data:/app/data
+      - bookshelf_uploads:/app/uploads
+    command: uvicorn app.main:app --host 0.0.0.0 --port 4408 --reload
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: bookshelf_frontend
+    ports:
+      - "4409:80"
+    depends_on:
+      - backend
+    environment:
+      - FRONTEND_API_BASE_URL=${FRONTEND_API_BASE_URL:-http://localhost:4408}
+
+volumes:
+  bookshelf_data:
+  bookshelf_uploads:

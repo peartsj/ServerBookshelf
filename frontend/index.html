@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bookshelf</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <main class="layout">
+    <section id="auth-screen" class="screen">
+      <div class="auth-card">
+        <h1 id="auth-title">Bookshelf Login</h1>
+        <p id="auth-subhead" class="subhead">Sign in to access your library.</p>
+        <form id="login-form" class="stack">
+          <div class="field">
+            <label for="login-username">Username</label>
+            <input id="login-username" autocomplete="username" required />
+          </div>
+          <div class="field">
+            <label for="login-password">Password</label>
+            <input id="login-password" type="password" autocomplete="current-password" required />
+          </div>
+          <div id="register-confirm-field" class="field hidden">
+            <label for="login-password-confirm">Confirm password</label>
+            <input id="login-password-confirm" type="password" autocomplete="new-password" />
+          </div>
+          <button id="login" class="btn" type="submit">Login</button>
+        </form>
+        <div class="inline-actions">
+          <button id="auth-mode-toggle" class="btn ghost small" type="button">Create account</button>
+        </div>
+        <div id="login-status" class="status"></div>
+      </div>
+    </section>
+
+    <section id="app-screen" class="screen hidden">
+      <header class="app-header panel">
+        <div>
+          <h1>Library</h1>
+          <p id="auth-status" class="subhead">Logged in</p>
+        </div>
+        <div class="inline-actions">
+          <button id="open-add-book" class="btn" type="button">Add New Book</button>
+          <button id="load-library" class="btn ghost" type="button">Refresh Library</button>
+          <button id="logout" class="btn ghost" type="button">Logout</button>
+        </div>
+      </header>
+
+      <section class="panel filters">
+        <h2>Library Filters</h2>
+        <div class="row">
+          <div class="field">
+            <label for="filter-title">Title contains</label>
+            <input id="filter-title" />
+          </div>
+          <div class="field">
+            <label for="filter-author">Author contains</label>
+            <input id="filter-author" />
+          </div>
+        </div>
+        <div class="row">
+          <div class="field">
+            <label for="filter-category">Category contains</label>
+            <input id="filter-category" />
+          </div>
+          <div class="field">
+            <label for="filter-year">Publishing Year</label>
+            <input id="filter-year" type="number" min="0" max="3000" />
+          </div>
+        </div>
+        <div class="row">
+          <div class="field">
+            <label for="sort-by">Sort by</label>
+            <select id="sort-by">
+              <option value="created_at">Created At</option>
+              <option value="title">Title</option>
+              <option value="author">Author</option>
+              <option value="publishing_year">Publishing Year</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="sort-dir">Sort direction</label>
+            <select id="sort-dir">
+              <option value="desc">Desc</option>
+              <option value="asc">Asc</option>
+            </select>
+          </div>
+        </div>
+        <div class="row">
+          <div class="field">
+            <label for="page-size">Page size</label>
+            <select id="page-size">
+              <option value="10">10</option>
+              <option value="20" selected>20</option>
+              <option value="50">50</option>
+            </select>
+          </div>
+          <div class="inline-actions">
+            <button id="clear-filters" class="btn ghost" type="button">Clear Filters</button>
+            <button id="prev-page" class="btn ghost" type="button">Previous</button>
+            <button id="next-page" class="btn ghost" type="button">Next</button>
+            <span id="page-status" class="status">Page 1</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel library">
+        <h2>Your Library</h2>
+        <ul id="ebooks-list" class="ebook-list"></ul>
+      </section>
+    </section>
+  </main>
+
+  <div id="book-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="book-modal-title">
+    <div class="modal-card panel">
+      <div class="modal-header">
+        <h2 id="book-modal-title">Add Book</h2>
+        <button id="close-add-book" class="btn ghost small" type="button">Close</button>
+      </div>
+
+      <form id="upload-form" class="stack">
+        <div class="field">
+          <label for="ebook-file">EPUB file</label>
+          <input id="ebook-file" type="file" accept=".epub,application/epub+zip" required />
+        </div>
+        <button type="submit" class="btn">Upload File</button>
+      </form>
+
+      <div id="upload-status" class="status">No file uploaded yet.</div>
+      <div id="upload-details" class="upload-details hidden" aria-live="polite">
+        <div><strong>Uploaded file:</strong> <span id="upload-file-name">-</span></div>
+        <div><strong>Size:</strong> <span id="upload-size">-</span></div>
+        <div><strong>Checksum (SHA-256):</strong> <span id="upload-checksum">-</span></div>
+      </div>
+
+      <form id="metadata-form" class="stack">
+        <div class="row">
+          <div class="field">
+            <label for="title">Title</label>
+            <input id="title" required />
+          </div>
+          <div class="field">
+            <label for="author">Author</label>
+            <input id="author" required />
+          </div>
+        </div>
+        <div class="row">
+          <div class="field">
+            <label for="publisher">Publisher</label>
+            <input id="publisher" />
+          </div>
+          <div class="field">
+            <label for="year">Publishing Year</label>
+            <input id="year" type="number" min="0" max="3000" />
+          </div>
+        </div>
+        <div class="row">
+          <div class="field">
+            <label for="series">Series</label>
+            <input id="series" />
+          </div>
+          <div class="field">
+            <label for="series-position">Series Position</label>
+            <input id="series-position" type="number" min="0" />
+          </div>
+        </div>
+        <div class="field">
+          <label for="categories">Categories (comma-separated)</label>
+          <input id="categories" list="category-suggestions" placeholder="Fantasy, Sci-Fi" />
+          <datalist id="category-suggestions"></datalist>
+        </div>
+        <div class="inline-actions category-assist">
+          <span class="assist-label">Quick add:</span>
+          <div id="quick-categories" class="quick-categories"></div>
+          <button id="clear-categories" class="btn small ghost" type="button">Clear Categories</button>
+        </div>
+        <div class="field">
+          <label for="description">Description</label>
+          <textarea id="description" rows="3"></textarea>
+        </div>
+        <button type="submit" class="btn">Create Book Record</button>
+      </form>
+
+      <div id="form-status" class="status"></div>
+    </div>
+  </div>
+
+  <div id="book-detail-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="book-detail-title">
+    <div class="modal-card panel details-card">
+      <div class="modal-header">
+        <h2 id="book-detail-title">Book Details</h2>
+        <button id="close-book-detail" class="btn ghost small" type="button">Close</button>
+      </div>
+
+      <div id="book-detail-content" class="details-grid" aria-live="polite">
+        <div><strong>Title:</strong> <span id="detail-title">-</span></div>
+        <div><strong>Author:</strong> <span id="detail-author">-</span></div>
+        <div><strong>Owner:</strong> <span id="detail-owner">-</span></div>
+        <div><strong>Publisher:</strong> <span id="detail-publisher">-</span></div>
+        <div><strong>Year:</strong> <span id="detail-year">-</span></div>
+        <div><strong>Series:</strong> <span id="detail-series">-</span></div>
+        <div><strong>Series Position:</strong> <span id="detail-series-position">-</span></div>
+        <div><strong>Categories:</strong> <span id="detail-categories">-</span></div>
+        <div><strong>Has Adaptation:</strong> <span id="detail-adaptation">-</span></div>
+        <div><strong>Language:</strong> <span id="detail-language">-</span></div>
+        <div><strong>ISBN-13:</strong> <span id="detail-isbn">-</span></div>
+        <div><strong>Description:</strong> <span id="detail-description">-</span></div>
+        <div><strong>File:</strong> <span id="detail-file">-</span></div>
+        <div><strong>Storage Path:</strong> <span id="detail-storage-path">-</span></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="./env.js"></script>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
