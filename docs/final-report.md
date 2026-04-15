@@ -1,6 +1,6 @@
 # Final Project Report — Self-Hosted Bookshelf
 
-## Project Summary (1–3 sentences)
+## Project Summary 
 
 Self-Hosted Bookshelf is a lightweight web app for managing a personal EPUB library. Users can upload EPUB files, create/edit metadata, automatically extract and display cover thumbnails, and download stored books later. The project is designed to be easy to run and self-host using Docker Compose.
 
@@ -105,11 +105,7 @@ flowchart TB
 
 ## Demo Video or GIF (TODO)
 
-Add your demo GIF file in this repo at:
-
 - `docs/demo.gif`
-
-Then embed it here by replacing the placeholder below:
 
 ![Demo of Self-Hosted Bookshelf](demo.gif)
 
