@@ -1,4 +1,4 @@
-# Self-Hosted Bookshelf Project Proposal
+# Self-Hosted Bookshelf Project Initial Design
 
 ## Project Purpose and Goals
 
