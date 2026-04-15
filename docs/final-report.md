@@ -113,57 +113,28 @@ Then embed it here by replacing the placeholder below:
 
 ![Demo of Self-Hosted Bookshelf](demo.gif)
 
-## What Did You Learn? (TODO — at least 3)
+## What Did You Learn?
 
-- Learning 1: 
-- Learning 2: 
-- Learning 3: 
+- In the future, I would have put more of the code into a single container. My experience has taught me that these are usually separate projects, but for a home server it is much easier and less error-prone to keep the frontend and backend communicating through the same container stack.
+- Docker containers have some quirks when it comes to persistent storage across updates. I do not know if I have it all figured out yet, but it was interesting to learn about volumes and how to control them in Docker Compose files.
+- AI helped me with this part, but it turns out that you can extract cover images from EPUB files. An EPUB is essentially a ZIP file containing metadata, text, cover art, and other assets. That was very informative and one of the coolest parts of this project.
 
-## Does Your Project Integrate with AI? (TODO)
+## Does Your Project Integrate with AI?
 
-_Write your answer here._
+This project does not integrate with any AI. It is fully self-contained and does not run any AI or machine learning algorithms.
 
-## How Did You Use AI to Build Your Project? (TODO)
+## How Did You Use AI to Build Your Project?
 
-_Write your answer here._
+I used AI to help speed up UI development, testing API requests in Docker containers, and learning the basics of Docker and Docker Compose. It helped me get much more done than I could have done on my own, and it turned into a final product that I will continue to host myself.
 
-## Why This Project Is Interesting to You (TODO)
+## Why This Project Is Interesting to You
 
-_Write your answer here._
+As I mentioned previously, I started my home lab journey about six months ago. I host multiple services and share them with my family and friends, like a Jellyfin media server and a file system. I have always been a big reader, so I saw an opportunity to make a similar app for books that can be accessed from anywhere. I am not ready to expose it to the open internet like some of my other services without learning more about security, but I can still access it through my personal VPN service, Tailscale. It is exciting to build a project that I can keep improving over time.
 
 ## Engineering Notes (Failover, Scaling, Performance, Authentication, Concurrency)
 
-### Authentication
+- Authentication uses Bearer tokens, and protected endpoints only return data for the signed-in user.
+- The app is built for a single Docker Compose deployment, with named volumes to preserve the database and uploads across rebuilds.
+- Performance comes from pagination, server-side filtering, and extracting cover art once instead of reprocessing EPUB files on every request.
+- If the project grows, the backend can be scaled by moving storage and the database to shared infrastructure.
 
-- The backend uses a Bearer token model: `/auth/login` returns an access token, and protected endpoints require `Authorization: Bearer <token>`.
-- Tokens are HMAC-signed and include an expiry time (configurable via `AUTH_TOKEN_TTL_HOURS`, default 24 hours).
-- User scoping is enforced server-side: list/read/download/cover endpoints only return data belonging to the authenticated user.
-
-### Concurrency
-
-- The backend runs on FastAPI/Uvicorn, supporting concurrent request handling.
-- Upload, cover extraction, and download paths are built to be safe for multiple users by scoping database queries to the active user identity.
-
-### Performance
-
-- Library listing supports pagination and server-side filtering to avoid loading the entire library at once.
-- Cover extraction is done once on create (when possible) and then served from stored bytes, so repeated list views don’t need to re-parse the EPUB.
-- The frontend uses thumbnail-style cover images and reuses the API proxy (`/api`) to keep requests simple and reliable.
-
-### Scaling
-
-- Current deployment target is a single Docker Compose stack.
-- The backend can be scaled horizontally if the database and upload storage are moved to shared infrastructure (e.g., a managed DB and shared object storage), and the app becomes fully stateless across instances.
-
-### Failover / Reliability
-
-- Data persistence is handled via Docker named volumes for the database and uploads, so container rebuilds do not wipe the library.
-- A simple operational failover strategy is:
-  - Keep periodic backups of the named volumes.
-  - Redeploy from GitHub (`git pull` + `docker compose up -d --build`) if the host machine needs to be rebuilt.
-- The frontend container can proxy `/api/*` to the backend, avoiding fragile browser CORS configuration and reducing “it works locally but not on the server” failures.
-
-### Notes on Deployment/Networking
-
-- Default ports are `4409` (frontend) and `4408` (backend).
-- The frontend reverse proxy allows the browser to always call same-origin URLs like `/api/auth/login` instead of contacting the backend port directly.
